@@ -2,7 +2,8 @@ import streamlit as st
 
 from aemet import Aemet
 import pandas as pd
-from config import API_KEY, FECHAINI, FECHAFIN
+from datetime import date, timedelta
+from config import API_KEY
 
 from prophet import Prophet
 from prophet.plot import plot_plotly
@@ -27,6 +28,9 @@ st.sidebar.title('Settings')
 st.sidebar.markdown('---')
 station = st.sidebar.selectbox('**Select station for prediction**', stations, index=None)
 st.sidebar.markdown('---')
+fechaini = st.sidebar.date_input('**Select a start date**', date(2018,1,1))
+fechafin = st.sidebar.date_input('**Select an end date**', date(2022,12,31))
+st.sidebar.markdown('---')
 n_days = st.sidebar.slider('**Days of prediction:**',min_value=1, max_value=60, value=40)
 
 if station:
@@ -41,13 +45,28 @@ def plot_raw_data():
 @st.cache_data
 def load_data():
 	aemet = Aemet(api_key=API_KEY)
-	data = aemet.get_valores_climatologicos_diarios(fechaini=FECHAINI, fechafin=FECHAFIN, estacion=station)
+	data = aemet.get_valores_climatologicos_diarios(fechaini=fechaini.strftime("%Y-%m-%dT%H:%M:%SUTC"),
+												    fechafin=fechafin.strftime("%Y-%m-%dT%H:%M:%SUTC"),
+													estacion=station)
 	df = pd.DataFrame(data)
 	df['fecha'] = pd.to_datetime(df['fecha'], format='%Y-%m-%d')
 	numeric_columns = ['tmed','tmin','tmax','velmedia','racha','sol','presMax','presMin']
 	for column in numeric_columns:
 		df[column] = df[column].str.replace(',', '.').astype(float)
 	return df
+
+@st.cache_data
+def load_new_data():
+	aemet = Aemet(api_key=API_KEY)
+	data = aemet.get_valores_climatologicos_diarios(fechaini=(fechafin + timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SUTC"),
+												    fechafin=(fechafin + timedelta(days=n_days)).strftime("%Y-%m-%dT%H:%M:%SUTC"),
+												    estacion=station)
+	df_new = pd.DataFrame(data)
+	df_new['fecha'] = pd.to_datetime(df_new['fecha'], format='%Y-%m-%d')
+	numeric_columns = ['tmed','tmin','tmax','velmedia','racha','sol','presMax','presMin']
+	for column in numeric_columns:
+		df_new[column] = df_new[column].str.replace(',', '.').astype(float)
+	return df_new
 
 if forecast:
 
@@ -59,7 +78,11 @@ if forecast:
 	df_train = df_train.rename(columns={"fecha": "ds", "tmed": "y"})
 
 	st.subheader('Raw data')
-	st.write(df.tail(10))
+	st.dataframe(df.tail(10))
+
+	st.subheader('Raw new data')
+	df_new = load_new_data()
+	st.dataframe(df_new)
 
 	plot_raw_data()
 
@@ -69,7 +92,7 @@ if forecast:
 	forecast = model.predict(future)
 
 	st.subheader('Forecast data')
-	st.write(forecast[['ds', 'trend_lower', 'trend', 'trend_upper', 'yhat_lower', 'yhat', 'yhat_upper']].tail(10))
+	st.dataframe(forecast[['ds', 'trend_lower', 'trend', 'trend_upper', 'yhat_lower', 'yhat', 'yhat_upper']].tail(n_days))
 		
 	st.write(f'Forecast plot for {n_days} days')
 	fig1 = plot_plotly(model, forecast)
