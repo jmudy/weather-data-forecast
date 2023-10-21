@@ -42,7 +42,8 @@ def plot_raw_data():
 	fig.layout.update(title_text='Time Series data', xaxis_rangeslider_visible=True)
 	st.plotly_chart(fig)
 
-@st.cache_data
+# Comentado porque al modificar fechas se guarda la primera que se selecciona
+#@st.cache_data
 def load_data():
 	aemet = Aemet(api_key=API_KEY)
 	data = aemet.get_valores_climatologicos_diarios(fechaini=fechaini.strftime("%Y-%m-%dT%H:%M:%SUTC"),
@@ -55,7 +56,8 @@ def load_data():
 		df[column] = df[column].str.replace(',', '.').astype(float)
 	return df
 
-@st.cache_data
+# Comentado porque al modificar fechas se guarda la primera que se selecciona
+#@st.cache_data
 def load_new_data():
 	aemet = Aemet(api_key=API_KEY)
 	data = aemet.get_valores_climatologicos_diarios(fechaini=(fechafin + timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SUTC"),
