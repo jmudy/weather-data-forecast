@@ -18,13 +18,15 @@ st.sidebar.title('Settings')
 st.sidebar.markdown('---')
 
 with st.sidebar.expander('**Station**'):
-	station = st.selectbox('**Select station for prediction**', stations, index=None)
+	station = st.selectbox('**Select station for prediction**', list(stations.values()), index=None)
+	if station:
+		station_code = [code for code, name in stations.items() if name == station][0]
 
 with st.sidebar.expander('**Date**'):
 	fechaini = st.date_input('**Select a start date**', date(2018,1,1))
 	fechafin = st.date_input('**Select an end date**', date(2022,12,31))
 
-n_days = st.sidebar.slider('**Days of prediction:**',min_value=1, max_value=365, value=200)
+n_days = st.sidebar.slider('**Days of prediction:**',min_value=1, max_value=365, value=290)
 
 tuning = st.sidebar.checkbox('Hyperparameter tuning')
 
@@ -46,7 +48,7 @@ if station:
 		if tuning:
 
 			with st.spinner(text='Loading data...'):
-				df = load_data(station, fechaini, fechafin)
+				df = load_data(station_code, fechaini, fechafin)
 			st.success('El dataframe df ha sido cargado satisfactoriamente!')
 
 			st.subheader('Raw data')
@@ -59,7 +61,7 @@ if station:
 			plot_raw_data(df)
 
 			# Carga de los datos de test
-			df_test = load_new_data(station, fechafin, n_days)
+			df_test = load_new_data(station_code, fechafin, n_days)
 
 			with st.spinner(text='Calculando hiperparámetros óptimos...'):
 				best_params = hyperparameter_tuning(df_train)
@@ -94,7 +96,7 @@ if station:
 		else:
 
 			with st.spinner(text='Loading data...'):
-				df = load_data(station, fechaini, fechafin)
+				df = load_data(station_code, fechaini, fechafin)
 			st.success('El dataframe df ha sido cargado satisfactoriamente!')
 
 			st.subheader('Raw data')
@@ -107,7 +109,7 @@ if station:
 			plot_raw_data(df)
 
 			# Carga de los datos de test
-			df_new = load_new_data(station, fechafin, n_days)
+			df_new = load_new_data(station_code, fechafin, n_days)
 
 			model = Prophet(changepoint_prior_scale=changepoint_prior_scale,
 				            seasonality_prior_scale=seasonality_prior_scale,

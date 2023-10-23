@@ -10,7 +10,15 @@ from prophet import Prophet
 from prophet.diagnostics import cross_validation, performance_metrics
 from sklearn import metrics
 
-stations = ('8058X', '8325X', '8309X', '8414A', '8416Y', '8416', '8293X')
+stations = {
+    #'8058X': 'OLIVA',
+    #'8325X': 'POLINYÀ DE XÚQUER',
+    '8309X': 'UTIEL',
+    '8414A': 'VALENCIA AEROPUERTO',
+    #'8416Y': 'VALÈNCIA, VIVEROS',
+    #'8416': 'VALÈNCIA',
+    '8293X': 'XÀTIVA',
+}
 cutoffs = pd.to_datetime(['2018-12-31', '2019-12-31', '2020-12-31', '2021-12-31'])
 
 def plot_raw_data(df):
@@ -31,11 +39,11 @@ def plot_forecast(n_days, forecast, y_test, y_pred):
 		height=600, width=1000)
 	st.plotly_chart(fig)
 
-def load_data(station, fechaini, fechafin):
+def load_data(station_code, fechaini, fechafin):
 	aemet = Aemet(api_key=API_KEY)
 	data = aemet.get_valores_climatologicos_diarios(fechaini=fechaini.strftime('%Y-%m-%dT%H:%M:%SUTC'),
 												    fechafin=fechafin.strftime('%Y-%m-%dT%H:%M:%SUTC'),
-													estacion=station)
+													estacion=station_code)
 	df = pd.DataFrame(data)
 	df['fecha'] = pd.to_datetime(df['fecha'], format='%Y-%m-%d')
 	numeric_columns = ['tmed','tmin','tmax','velmedia','racha','sol','presMax','presMin']
@@ -43,11 +51,11 @@ def load_data(station, fechaini, fechafin):
 		df[column] = df[column].str.replace(',', '.').astype(float)
 	return df
 
-def load_new_data(station, fechafin, n_days):
+def load_new_data(station_code, fechafin, n_days):
 	aemet = Aemet(api_key=API_KEY)
 	data = aemet.get_valores_climatologicos_diarios(fechaini=(fechafin + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SUTC'),
 												    fechafin=(fechafin + timedelta(days=n_days)).strftime('%Y-%m-%dT%H:%M:%SUTC'),
-												    estacion=station)
+												    estacion=station_code)
 	df_new = pd.DataFrame(data)
 	df_new['fecha'] = pd.to_datetime(df_new['fecha'], format='%Y-%m-%d')
 	numeric_columns = ['tmed','tmin','tmax','velmedia','racha','sol','presMax','presMin']
