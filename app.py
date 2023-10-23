@@ -25,10 +25,16 @@ with st.sidebar.expander('**Date**'):
 	fechafin = st.date_input('**Select an end date**', date(2022,12,31))
 
 n_days = st.sidebar.slider('**Days of prediction:**',min_value=1, max_value=365, value=200)
-tuning = st.sidebar.checkbox('Hyperparameter tuning')
-forecast = st.sidebar.button('Make forecast', use_container_width=True)
 
-# Aquí meter un selector de hiperparámetros para seleccionarlos manualmente si no se elige 'tuning'
+tuning = st.sidebar.checkbox('Hyperparameter tuning')
+
+if not tuning:
+	changepoint_prior_scale = st.sidebar.number_input('Insert changepoint_prior_scale value', value=0.05)
+	seasonality_prior_scale = st.sidebar.number_input('Insert seasonality_prior_scale value', value=10.0)
+	holidays_prior_scale = st.sidebar.number_input('Insert holidays_prior_scale value', value=10.0)
+	seasonality_mode = st.sidebar.selectbox('Select seasonality_mode value', ('additive', 'multiplicative'), index=0)
+
+forecast = st.sidebar.button('Make forecast', use_container_width=True)
 
 st.title('Weather data forecast in Valencia')
 st.markdown('---')
@@ -103,7 +109,10 @@ if station:
 			# Carga de los datos de test
 			df_new = load_new_data(station, fechafin, n_days)
 
-			model = Prophet()
+			model = Prophet(changepoint_prior_scale=changepoint_prior_scale,
+				            seasonality_prior_scale=seasonality_prior_scale,
+				            holidays_prior_scale=holidays_prior_scale,
+				            seasonality_mode=seasonality_mode)
 			model.fit(df_train)
 			future = model.make_future_dataframe(periods=n_days)
 			forecast = model.predict(future)
