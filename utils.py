@@ -49,6 +49,27 @@ def plot_forecast(n_days, forecast, y_test, y_pred):
             line=dict(color="orange"),
         )
     )
+    fig.add_trace(
+        go.Scatter(
+            x=forecast["ds"].tail(n_days),
+            y=forecast["yhat_upper"].tail(n_days),
+            mode="lines",
+            line_color = 'rgba(0,0,0,0)',
+            fillcolor="rgba(255,153,51,0.2)", showlegend = False
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=forecast["ds"].tail(n_days),
+            y=forecast["yhat_lower"].tail(n_days),
+            mode="lines",
+            line_color = 'rgba(0,0,0,0)',
+            fill="tonexty",
+            fillcolor="rgba(255,153,51,0.2)",
+            name="Confidence Bound"
+        )
+    )
+
     fig.update_layout(
         xaxis_title="Date",
         yaxis_title="Temperatura media",
