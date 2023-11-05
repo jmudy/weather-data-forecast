@@ -1,0 +1,23 @@
+id;descripcion;tipo_datos;requerido;unidad
+fecha;fecha del dia (AAAA-MM-DD);string;true;
+indicativo;indicativo climatológico;string;true;
+nombre;nombre (ubicación) de la estación;string;true;
+provincia;provincia de la estación;string;true;
+altitud;altitud de la estación en m sobre el nivel del mar;float;true;m
+tmed;Temperatura media diaria;float;false;°C
+prec;Precipitación diaria de 07 a 07;float;false;mm (Ip = inferior a 0,1 mm) (Acum = Precipitación acumulada)
+tmin;Temperatura Mínima del día;float;false;°C
+horatmin;Hora y minuto de la temperatura mínima;string;false;UTC
+tmax;Temperatura Máxima del día;float;false;°C
+horatmax;Hora y minuto de la temperatura máxima;string;false;UTC
+dir;Dirección de la racha máxima;float;false;decenas de grado (99 = dirección variable)(88 = sin dato)
+velmedia;Velocidad media del viento;float;false;m/s
+racha;Racha máxima del viento;float;false;m/s
+horaracha;Hora y minuto de la racha máxima;string;false;UTC
+sol;Insolación;float;false;horas
+presmax;Presión máxima al nivel de referencia de la estación;float;false;hPa
+horapresmax;Hora de la presión máxima (redondeada a la hora entera más próxima);string;false;UTC
+presmin;Presión mínima al nivel de referencia de la estación;float;false;hPa
+horapresmin;Hora de la presión mínima (redondeada a la hora entera más próxima);string;false;UTC
+;;;;
+Fuente;https://opendata.aemet.es/opendata/sh/b3aa9d28;;;

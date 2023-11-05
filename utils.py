@@ -1,14 +1,14 @@
-import streamlit as st
+import itertools
+from datetime import timedelta
 import pandas as pd
 import numpy as np
-import itertools
 from plotly import graph_objs as go
-from datetime import timedelta
+import streamlit as st
 from aemet import Aemet
-from config import API_KEY
 from prophet import Prophet
 from prophet.diagnostics import cross_validation, performance_metrics
 from sklearn import metrics
+from config import API_KEY
 
 stations = {
     #'8058X': 'OLIVA',
@@ -69,7 +69,6 @@ def plot_forecast(n_days, forecast, y_test, y_pred):
             name="Confidence Bound"
         )
     )
-
     fig.update_layout(
         xaxis_title="Date",
         yaxis_title="Temperatura media",

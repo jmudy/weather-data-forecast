@@ -1,9 +1,9 @@
-import streamlit as st
-from utils import *
-from prophet import Prophet
 from datetime import date
-from prophet.plot import plot_plotly
 import warnings
+import streamlit as st
+from prophet import Prophet
+from prophet.plot import plot_plotly
+from utils import *
 
 warnings.simplefilter("ignore", category=FutureWarning)
 
@@ -102,7 +102,7 @@ if station:
 
             st.write(f"Forecast plot for {n_days} days")
             fig1 = plot_plotly(model, forecast)
-            # fig1.update_traces(line=dict(color='rgba(110, 135, 255, 0.5)')) # color de la traza
+            #fig1.update_traces(line=dict(color='rgba(110, 135, 255, 0.5)')) # color de la traza
             fig1.update_traces(
                 marker=dict(color="rgb(110, 135, 255)"), selector=dict(mode="markers")
             )  # color puntos observaciones reales
@@ -167,7 +167,7 @@ if station:
 
             st.write(f"Forecast plot for {n_days} days")
             fig1 = plot_plotly(model, forecast)
-            # fig1.update_traces(line=dict(color='rgba(110, 135, 255, 0.5)')) # color de la traza
+            #fig1.update_traces(line=dict(color='rgba(110, 135, 255, 0.5)')) # color de la traza
             fig1.update_traces(
                 marker=dict(color="rgb(110, 135, 255)"), selector=dict(mode="markers")
             )  # color puntos observaciones reales
