@@ -1,3 +1,4 @@
+
 import itertools
 from datetime import timedelta
 import pandas as pd
@@ -10,6 +11,7 @@ from prophet.diagnostics import cross_validation, performance_metrics
 from sklearn import metrics
 from config import API_KEY
 
+
 stations = {
     #'8058X': 'OLIVA',
     #'8325X': 'POLINYÀ DE XÚQUER',
@@ -19,6 +21,7 @@ stations = {
     #'8416': 'VALÈNCIA',
     "8293X": "XÀTIVA",
 }
+
 cutoffs = pd.to_datetime(["2018-12-31", "2019-12-31", "2020-12-31", "2021-12-31"])
 
 

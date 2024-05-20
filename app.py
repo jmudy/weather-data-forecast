@@ -1,9 +1,11 @@
+
 from datetime import date
 import warnings
 import streamlit as st
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from utils import *
+
 
 warnings.simplefilter("ignore", category=FutureWarning)
 
