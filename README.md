@@ -1,6 +1,6 @@
 # 🌦️ Weather Data Forecast
 
-This repository contains the development of forecasting techniques for weather data in Valencia using [Facebook Prophet](https://github.com/facebook/prophet).
+This repository contains the development of a [Facebook Prophet](https://github.com/facebook/prophet) model to forecast the average temperature in Valencia (Spain).
 
 ## 📁 Project Structure
 
